@@ -168,6 +168,38 @@ public class MenuOptions {
 						JOptionPane.showMessageDialog(null, "Valor de x inválido", "Error", 2);
 					}
 					break;
+				case SUM_POLY:
+					Forma1 addend = readForma1("Polinomio: " + Main.PolyForma1.toPolynomialString()
+							+ "\nIngrese el monomio o polinomio a sumar:");
+
+					if (addend == null) {
+						break;
+					}
+
+					String before = Main.PolyForma1.toPolynomialString();
+					Main.PolyForma1 = Main.PolyForma1.sum(addend);
+
+					String sumMessage = "(" + before + ") + (" + addend.toPolynomialString() + ") = "
+							+ Main.PolyForma1.toPolynomialString();
+					System.out.println(sumMessage);
+					JOptionPane.showMessageDialog(null, sumMessage, "Sumar polinomios", 1);
+					break;
+				case MULTIPLY_POLY:
+					Forma1 factor = readForma1("Polinomio: " + Main.PolyForma1.toPolynomialString()
+							+ "\nIngrese el monomio o polinomio a multiplicar:");
+
+					if (factor == null) {
+						break;
+					}
+
+					String beforeMultiply = Main.PolyForma1.toPolynomialString();
+					Main.PolyForma1 = Main.PolyForma1.multiply(factor);
+
+					String multiplyMessage = "(" + beforeMultiply + ") * (" + factor.toPolynomialString() + ") = "
+							+ Main.PolyForma1.toPolynomialString();
+					System.out.println(multiplyMessage);
+					JOptionPane.showMessageDialog(null, multiplyMessage, "Multiplicar polinomios", 1);
+					break;
 				default:
 					System.out.println("Opción " + optionValue + " aún no implementada.");
 					break;

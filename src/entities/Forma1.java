@@ -79,6 +79,48 @@ public class Forma1 {
 		this.vector = newVector;
 	}
 
+	public Forma1 sum(Forma1 other) {
+		int degree = Math.max(this.vector[0], other.vector[0]);
+		Forma1 result = new Forma1(degree);
+
+		for (int i = 1; i <= result.DU; i++) {
+			int exp = result.DU - i;
+
+			if (exp <= this.vector[0]) {
+				result.vector[i] += this.vector[this.DU - exp];
+			}
+			if (exp <= other.vector[0]) {
+				result.vector[i] += other.vector[other.DU - exp];
+			}
+		}
+
+		result.removeLeadingZeros();
+		return result;
+	}
+
+	public Forma1 multiply(Forma1 other) {
+		int degree = this.vector[0] + other.vector[0];
+		Forma1 result = new Forma1(degree);
+
+		for (int i = 1; i <= this.DU; i++) {
+			if (this.vector[i] != 0) {
+				int expA = this.DU - i;
+
+				for (int j = 1; j <= other.DU; j++) {
+					if (other.vector[j] != 0) {
+						int expB = other.DU - j;
+
+						int exp = expA + expB;
+						result.vector[result.DU - exp] += this.vector[i] * other.vector[j];
+					}
+				}
+			}
+		}
+
+		result.removeLeadingZeros();
+		return result;
+	}
+
 	public double evaluate(double x) {
 		double result = 0;
 
@@ -97,29 +139,27 @@ public class Forma1 {
 			int coef = this.vector[i];
 			int exp = this.DU - i;
 
-			if (coef == 0) {
-				continue;
-			}
+			if (coef != 0) {
+				// Signo: el primer término solo lleva "-" si es negativo
+				if (coef < 0) {
+					sb.append("-");
+				} else if (sb.length() > 0) {
+					sb.append("+");
+				}
 
-			// Signo: el primer término solo lleva "-" si es negativo
-			if (coef < 0) {
-				sb.append("-");
-			} else if (sb.length() > 0) {
-				sb.append("+");
-			}
+				int absCoef = Math.abs(coef);
 
-			int absCoef = Math.abs(coef);
+				// El coeficiente 1 se omite cuando hay x (ej: "x^3" en vez de "1x^3")
+				if (absCoef != 1 || exp == 0) {
+					sb.append(absCoef);
+				}
 
-			// El coeficiente 1 se omite cuando hay x (ej: "x^3" en vez de "1x^3")
-			if (absCoef != 1 || exp == 0) {
-				sb.append(absCoef);
-			}
-
-			if (exp >= 1) {
-				sb.append("x");
-			}
-			if (exp > 1) {
-				sb.append("^").append(exp);
+				if (exp >= 1) {
+					sb.append("x");
+				}
+				if (exp > 1) {
+					sb.append("^").append(exp);
+				}
 			}
 		}
 
