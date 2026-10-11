@@ -92,6 +92,53 @@ public class MenuOptions {
 						Main.PolyForma1 = forma1;
 					}
 					break;
+				case INSERT_MONO:
+					String monoInput = JOptionPane.showInputDialog(null, "Ingrese el monomio (ej: 4x^3, -x, 7):",
+							"Insertar monomio", -1);
+
+					if (monoInput == null) {
+						System.out.println("Ingreso cancelado.");
+						break;
+					}
+
+					try {
+						int[] pair = PolyUtils.parsePolynomial(monoInput);
+
+						if (pair.length != 2) {
+							throw new IllegalArgumentException("Ingrese un solo término");
+						}
+
+						Main.PolyForma1.insertMonomial(pair[0], pair[1]);
+						System.out.println("Monomio insertado: " + monoInput + " -> "
+								+ Main.PolyForma1.toPolynomialString());
+					} catch (IllegalArgumentException e) {
+						JOptionPane.showMessageDialog(null, "Monomio inválido: " + e.getMessage(), "Error", 2);
+					}
+					break;
+				case DELETE:
+					String expInput = JOptionPane.showInputDialog(null,
+							"Polinomio: " + Main.PolyForma1.toPolynomialString()
+									+ "\nIngrese el exponente del monomio a eliminar:",
+							"Eliminar monomio", -1);
+
+					if (expInput == null) {
+						System.out.println("Eliminación cancelada.");
+						break;
+					}
+
+					try {
+						int exp = Integer.parseInt(expInput.trim());
+
+						if (Main.PolyForma1.deleteMonomial(exp)) {
+							System.out.println("Monomio con exponente " + exp + " eliminado -> "
+									+ Main.PolyForma1.toPolynomialString());
+						} else {
+							JOptionPane.showMessageDialog(null, "No existe un término con exponente " + exp, "Error", 2);
+						}
+					} catch (NumberFormatException e) {
+						JOptionPane.showMessageDialog(null, "Exponente inválido", "Error", 2);
+					}
+					break;
 				case SHOW_FORMA:
 					System.out.println(Main.PolyForma1.toFormaString());
 					JOptionPane.showMessageDialog(null, Main.PolyForma1.toFormaString(), "Mostrar Forma 1", 1);
@@ -99,6 +146,27 @@ public class MenuOptions {
 				case SHOW_POLY:
 					System.out.println("Polinomio Forma 1: " + Main.PolyForma1.toPolynomialString());
 					JOptionPane.showMessageDialog(null, Main.PolyForma1.toPolynomialString(), "Polinomio Forma 1", 1);
+					break;
+				case EVALUATE_WITH_VALUE:
+					String xInput = JOptionPane.showInputDialog(null,
+							"Polinomio: " + Main.PolyForma1.toPolynomialString() + "\nIngrese el valor de x:",
+							"Evaluar polinomio", -1);
+
+					if (xInput == null) {
+						System.out.println("Evaluación cancelada.");
+						break;
+					}
+
+					try {
+						double x = Double.parseDouble(xInput.trim().replace(',', '.'));
+						double result = Main.PolyForma1.evaluate(x);
+
+						String message = "P(" + formatNumber(x) + ") = " + formatNumber(result);
+						System.out.println(message);
+						JOptionPane.showMessageDialog(null, message, "Evaluar polinomio", 1);
+					} catch (NumberFormatException e) {
+						JOptionPane.showMessageDialog(null, "Valor de x inválido", "Error", 2);
+					}
 					break;
 				default:
 					System.out.println("Opción " + optionValue + " aún no implementada.");
@@ -145,5 +213,13 @@ public class MenuOptions {
 				+ "  Suma (F1): " + (Main.ResultSum == null ? "null" : Main.ResultSum.toPolynomialString()) + "\n"
 				+ "  Multiplicación (F2): " + (Main.ResultMultiplication == null ? "null" : "(sin implementar)")
 				+ "\n\n";
+	}
+
+	// Muestra enteros sin ".0" (ej: 5 en vez de 5.0)
+	private String formatNumber(double value) {
+		if (value == Math.rint(value) && !Double.isInfinite(value)) {
+			return String.valueOf((long) value);
+		}
+		return String.valueOf(value);
 	}
 }

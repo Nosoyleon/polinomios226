@@ -21,6 +21,75 @@ public class Forma1 {
 		}
 	}
 
+	// Inserta coef*x^exp. Si el exponente ya existe, se suman los coeficientes
+	public void insertMonomial(int coef, int exp) {
+		if (exp > this.vector[0]) {
+			// Exponente mayor al grado: se crea un vector más grande y se copian los
+			// coeficientes a su nueva posición (newDU - exp)
+			int newDU = exp + 1;
+			int[] newVector = new int[newDU + 1];
+			newVector[0] = exp;
+
+			for (int i = 1; i <= this.DU; i++) {
+				int oldExp = this.DU - i;
+				newVector[newDU - oldExp] = this.vector[i];
+			}
+
+			this.DU = newDU;
+			this.vector = newVector;
+		}
+
+		this.vector[this.DU - exp] += coef;
+
+		removeLeadingZeros();
+	}
+
+	public boolean deleteMonomial(int exp) {
+		if (exp < 0 || exp > this.vector[0] || this.vector[this.DU - exp] == 0) {
+			return false;
+		}
+
+		this.vector[this.DU - exp] = 0;
+
+		removeLeadingZeros();
+		return true;
+	}
+
+	// Si el término de mayor grado quedó en 0 (ej: se insertó -3x^5 sobre 3x^5),
+	// se reduce el grado hasta el primer coeficiente distinto de 0
+	private void removeLeadingZeros() {
+		int zeros = 0;
+		while (zeros < this.DU - 1 && this.vector[zeros + 1] == 0) {
+			zeros++;
+		}
+
+		if (zeros == 0) {
+			return;
+		}
+
+		int newDU = this.DU - zeros;
+		int[] newVector = new int[newDU + 1];
+		newVector[0] = newDU - 1;
+
+		for (int i = 1; i <= newDU; i++) {
+			newVector[i] = this.vector[i + zeros];
+		}
+
+		this.DU = newDU;
+		this.vector = newVector;
+	}
+
+	public double evaluate(double x) {
+		double result = 0;
+
+		for (int i = 1; i <= this.DU; i++) {
+			int exp = this.DU - i;
+			result += this.vector[i] * Math.pow(x, exp);
+		}
+
+		return result;
+	}
+
 	public String toPolynomialString() {
 		StringBuilder sb = new StringBuilder();
 
