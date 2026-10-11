@@ -106,4 +106,28 @@ public class PolyUtils {
 		}
 		return sb.append("]").toString();
 	}
+
+	// Agrega un término (coef != 0) al texto del polinomio, ej: "+3x^2", "-x", "-10"
+	public static void appendTerm(StringBuilder sb, int coef, int exp) {
+		// Signo: el primer término solo lleva "-" si es negativo
+		if (coef < 0) {
+			sb.append("-");
+		} else if (sb.length() > 0) {
+			sb.append("+");
+		}
+
+		int absCoef = Math.abs(coef);
+
+		// El coeficiente 1 se omite cuando hay x (ej: "x^3" en vez de "1x^3")
+		if (absCoef != 1 || exp == 0) {
+			sb.append(absCoef);
+		}
+
+		if (exp >= 1) {
+			sb.append("x");
+		}
+		if (exp > 1) {
+			sb.append("^").append(exp);
+		}
+	}
 }

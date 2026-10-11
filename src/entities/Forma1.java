@@ -2,6 +2,8 @@ package entities;
 
 import java.util.Arrays;
 
+import utils.PolyUtils;
+
 public class Forma1 {
 
 	private int DU, vector[];
@@ -140,26 +142,7 @@ public class Forma1 {
 			int exp = this.DU - i;
 
 			if (coef != 0) {
-				// Signo: el primer término solo lleva "-" si es negativo
-				if (coef < 0) {
-					sb.append("-");
-				} else if (sb.length() > 0) {
-					sb.append("+");
-				}
-
-				int absCoef = Math.abs(coef);
-
-				// El coeficiente 1 se omite cuando hay x (ej: "x^3" en vez de "1x^3")
-				if (absCoef != 1 || exp == 0) {
-					sb.append(absCoef);
-				}
-
-				if (exp >= 1) {
-					sb.append("x");
-				}
-				if (exp > 1) {
-					sb.append("^").append(exp);
-				}
+				PolyUtils.appendTerm(sb, coef, exp);
 			}
 		}
 
