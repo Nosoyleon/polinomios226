@@ -1,0 +1,38 @@
+# Compiled output
+bin/
+out/
+target/
+build/
+*.class
+
+# Packaged files
+*.jar
+*.war
+*.ear
+
+# Logs and crash dumps
+*.log
+hs_err_pid*
+replay_pid*
+
+# Eclipse (keep .project, .classpath and .settings/ so the project imports cleanly)
+.metadata/
+.recommenders/
+*.launch
+.loadpath
+.factorypath
+.apt_generated/
+.apt_generated_test/
+*.tmp
+*.bak
+*~.nib
+local.properties
+
+# IntelliJ / VS Code
+.idea/
+*.iml
+.vscode/
+
+# macOS
+.DS_Store
+._*
