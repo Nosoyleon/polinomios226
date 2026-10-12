@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 
 import entities.Forma1;
 import entities.Forma2;
+import entities.Forma3;
 import polinomios.Main;
 import utils.PolyUtils;
 
@@ -60,6 +61,24 @@ public class MenuOptions {
 					}
 
 					forma2Options();
+
+					System.out.println();
+					break;
+
+				case FORMA3_MENU:
+					System.out.println("MOSTRANDO MENU FORMA 3...");
+
+					if (Main.PolyForma3 == null) {
+						Forma3 forma3 = readForma3("No hay un polinomio en Forma 3.\nIngrese el polinomio:");
+
+						if (forma3 == null) {
+							break;
+						}
+
+						Main.PolyForma3 = forma3;
+					}
+
+					forma3Options();
 
 					System.out.println();
 					break;
@@ -293,6 +312,113 @@ public class MenuOptions {
 		}
 	}
 
+	public void forma3Options() {
+
+		boolean running = true;
+
+		while (running) {
+
+			System.out.println(Main.PolyForma3.toFormaString());
+
+			String userInput = JOptionPane.showInputDialog(null,
+					"(1) - Insertar polinomio.\n" + "(2) - Insertar monomio.\n" + "(3) - Eliminar monomio.\n"
+							+ "(4) - Mostrar Forma.\n" + "(5) - Mostrar polinomio.\n" + "(6) - Evaluar con un valor.\n"
+							+ "(7) - Sumar polinomios.\n" + "(8) - Multiplicar polinomios.\n" + "\n(0) - Volver.",
+					"Menú Forma 3", -1);
+
+			try {
+				int optionInt = userInput == null ? 0 : Integer.parseInt(userInput);
+
+				POLY_OPTION optionValue = POLY_OPTION.EXIT;
+				optionValue = optionValue.getFromInt(optionInt);
+
+				switch (optionValue) {
+				case EXIT:
+					running = false;
+					break;
+				case INSERT_POLY:
+					Forma3 newPoly = readForma3("Ingrese el nuevo polinomio (reemplaza al actual):");
+
+					if (newPoly != null) {
+						Main.PolyForma3 = newPoly;
+					}
+					break;
+				case INSERT_MONO:
+					int[] pair = readMonomial();
+
+					if (pair != null) {
+						Main.PolyForma3.insertMonomial(pair[0], pair[1]);
+						System.out.println("Monomio insertado -> " + Main.PolyForma3.toPolynomialString());
+					}
+					break;
+				case DELETE:
+					Integer exp = readExponent(Main.PolyForma3.toPolynomialString());
+
+					if (exp != null) {
+						if (Main.PolyForma3.deleteMonomial(exp)) {
+							System.out.println("Monomio con exponente " + exp + " eliminado -> "
+									+ Main.PolyForma3.toPolynomialString());
+						} else {
+							JOptionPane.showMessageDialog(null, "No existe un término con exponente " + exp, "Error",
+									2);
+						}
+					}
+					break;
+				case SHOW_FORMA:
+					System.out.println(Main.PolyForma3.toFormaString());
+					JOptionPane.showMessageDialog(null, Main.PolyForma3.toFormaString(), "Mostrar Forma 3", 1);
+					break;
+				case SHOW_POLY:
+					System.out.println("Polinomio Forma 3: " + Main.PolyForma3.toPolynomialString());
+					JOptionPane.showMessageDialog(null, Main.PolyForma3.toPolynomialString(), "Polinomio Forma 3", 1);
+					break;
+				case EVALUATE_WITH_VALUE:
+					Double x = readX(Main.PolyForma3.toPolynomialString());
+
+					if (x != null) {
+						String message = "P(" + formatNumber(x) + ") = " + formatNumber(Main.PolyForma3.evaluate(x));
+						System.out.println(message);
+						JOptionPane.showMessageDialog(null, message, "Evaluar polinomio", 1);
+					}
+					break;
+				case SUM_POLY:
+					Forma3 addend = readForma3("Polinomio: " + Main.PolyForma3.toPolynomialString()
+							+ "\nIngrese el monomio o polinomio a sumar:");
+
+					if (addend != null) {
+						String before = Main.PolyForma3.toPolynomialString();
+						Main.PolyForma3 = Main.PolyForma3.sum(addend);
+
+						String sumMessage = "(" + before + ") + (" + addend.toPolynomialString() + ") = "
+								+ Main.PolyForma3.toPolynomialString();
+						System.out.println(sumMessage);
+						JOptionPane.showMessageDialog(null, sumMessage, "Sumar polinomios", 1);
+					}
+					break;
+				case MULTIPLY_POLY:
+					Forma3 factor = readForma3("Polinomio: " + Main.PolyForma3.toPolynomialString()
+							+ "\nIngrese el monomio o polinomio a multiplicar:");
+
+					if (factor != null) {
+						String beforeMultiply = Main.PolyForma3.toPolynomialString();
+						Main.PolyForma3 = Main.PolyForma3.multiply(factor);
+
+						String multiplyMessage = "(" + beforeMultiply + ") * (" + factor.toPolynomialString() + ") = "
+								+ Main.PolyForma3.toPolynomialString();
+						System.out.println(multiplyMessage);
+						JOptionPane.showMessageDialog(null, multiplyMessage, "Multiplicar polinomios", 1);
+					}
+					break;
+				default:
+					break;
+				}
+
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Opción incorrecta", "Error", 2);
+			}
+		}
+	}
+
 	// Pide un monomio (ej: 4x^3, -x, 7) y lo devuelve como [coef, exp]. Devuelve
 	// null si se
 	// cancela o es inválido
@@ -369,6 +495,18 @@ public class MenuOptions {
 		return forma1;
 	}
 
+	private Forma3 readForma3(String message) {
+		int[] pairs = readSortedPairs(message, "Polinomio Forma 3");
+
+		if (pairs == null) {
+			return null;
+		}
+
+		Forma3 forma3 = new Forma3();
+		forma3.fillFromPairs(pairs);
+		return forma3;
+	}
+
 	private Forma2 readForma2(String message) {
 		int[] pairs = readSortedPairs(message, "Polinomio Forma 2");
 
@@ -406,7 +544,7 @@ public class MenuOptions {
 		return "Valores actuales:\n" + "  Forma 1: "
 				+ (Main.PolyForma1 == null ? "null" : Main.PolyForma1.toPolynomialString()) + "\n" + "  Forma 2: "
 				+ (Main.PolyForma2 == null ? "null" : Main.PolyForma2.toPolynomialString()) + "\n" + "  Forma 3: "
-				+ (Main.PolyForma3 == null ? "null" : "(sin implementar)") + "\n" + "  Suma (F1): "
+				+ (Main.PolyForma3 == null ? "null" : Main.PolyForma3.toPolynomialString()) + "\n" + "  Suma (F1): "
 				+ (Main.ResultSum == null ? "null" : Main.ResultSum.toPolynomialString()) + "\n"
 				+ "  Multiplicación (F2): "
 				+ (Main.ResultMultiplication == null ? "null" : Main.ResultMultiplication.toPolynomialString())
