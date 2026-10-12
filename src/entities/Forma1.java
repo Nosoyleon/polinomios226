@@ -100,6 +100,27 @@ public class Forma1 {
 		return result;
 	}
 
+	public static Forma1 sumForma2AndForma3(Forma2 forma2, Forma3 forma3) {
+		int[] vector2 = forma2.getVector();
+		Nodo p = forma3.getPunta();
+
+		int degree2 = forma2.getDU() > 0 ? vector2[2] : 0;
+		int degree3 = p != null ? p.getExp() : 0;
+		Forma1 result = new Forma1(Math.max(degree2, degree3));
+
+		for (int k = 1; k < forma2.getDU(); k += 2) {
+			result.vector[result.DU - vector2[k + 1]] += vector2[k];
+		}
+
+		while (p != null) {
+			result.vector[result.DU - p.getExp()] += p.getCoe();
+			p = p.getLiga();
+		}
+
+		result.removeLeadingZeros();
+		return result;
+	}
+
 	public Forma1 multiply(Forma1 other) {
 		int degree = this.vector[0] + other.vector[0];
 		Forma1 result = new Forma1(degree);

@@ -83,6 +83,46 @@ public class MenuOptions {
 					System.out.println();
 					break;
 
+				case FORMA2_PLUS_FORMA3:
+					if (Main.PolyForma2 == null || Main.PolyForma3 == null) {
+						JOptionPane.showMessageDialog(null,
+								"Para sumar se necesitan los polinomios en Forma 2 y Forma 3.\n"
+										+ missingPolynomials(false, Main.PolyForma2 == null, Main.PolyForma3 == null),
+								"Sumar Forma 2 + Forma 3", 2);
+						break;
+					}
+
+					Main.ResultSum = Forma1.sumForma2AndForma3(Main.PolyForma2, Main.PolyForma3);
+
+					String sumMessage = "(" + Main.PolyForma2.toPolynomialString() + ") + ("
+							+ Main.PolyForma3.toPolynomialString() + ") = " + Main.ResultSum.toPolynomialString();
+					System.out.println(sumMessage);
+					System.out.println(Main.ResultSum.toFormaString());
+					JOptionPane.showMessageDialog(null, sumMessage + "\n\n" + Main.ResultSum.toFormaString(),
+							"Sumar Forma 2 + Forma 3 = Forma 1", 1);
+					break;
+
+				case FORMA3_TIMES_FORMA1:
+					if (Main.PolyForma3 == null || Main.PolyForma1 == null) {
+						JOptionPane.showMessageDialog(null,
+								"Para multiplicar se necesitan los polinomios en Forma 3 y Forma 1.\n"
+										+ missingPolynomials(Main.PolyForma1 == null, false, Main.PolyForma3 == null),
+								"Multiplicar Forma 3 * Forma 1", 2);
+						break;
+					}
+
+					Main.ResultMultiplication = Forma2.multiplyForma3AndForma1(Main.PolyForma3, Main.PolyForma1);
+
+					String multiplyMessage = "(" + Main.PolyForma3.toPolynomialString() + ") * ("
+							+ Main.PolyForma1.toPolynomialString() + ") = "
+							+ Main.ResultMultiplication.toPolynomialString();
+					System.out.println(multiplyMessage);
+					System.out.println(Main.ResultMultiplication.toFormaString());
+					JOptionPane.showMessageDialog(null,
+							multiplyMessage + "\n\n" + Main.ResultMultiplication.toFormaString(),
+							"Multiplicar Forma 3 * Forma 1 = Forma 2", 1);
+					break;
+
 				case EXIT:
 					exitControl = null;
 					break;
@@ -538,6 +578,23 @@ public class MenuOptions {
 			JOptionPane.showMessageDialog(null, "Polinomio inválido: " + e.getMessage(), "Error", 2);
 			return null;
 		}
+	}
+
+	// Lista los polinomios que faltan, ej: "Falta: Forma 2, Forma 3"
+	private String missingPolynomials(boolean missing1, boolean missing2, boolean missing3) {
+		String missing = "";
+
+		if (missing1) {
+			missing += "Forma 1";
+		}
+		if (missing2) {
+			missing += (missing.isEmpty() ? "" : ", ") + "Forma 2";
+		}
+		if (missing3) {
+			missing += (missing.isEmpty() ? "" : ", ") + "Forma 3";
+		}
+
+		return "Falta: " + missing + ". Ingréselo desde su menú.";
 	}
 
 	private String currentValuesHeader() {

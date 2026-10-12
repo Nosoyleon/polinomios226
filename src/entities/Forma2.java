@@ -101,6 +101,26 @@ public class Forma2 {
 		return result;
 	}
 
+	public static Forma2 multiplyForma3AndForma1(Forma3 forma3, Forma1 forma1) {
+		Forma2 result = new Forma2(0);
+		int[] vector1 = forma1.getVector();
+		int du1 = forma1.getDU();
+		Nodo p = forma3.getPunta();
+
+		while (p != null) {
+			for (int i = 1; i <= du1; i++) {
+				if (vector1[i] != 0) {
+					int exp1 = du1 - i;
+					result.insertMonomial(p.getCoe() * vector1[i], p.getExp() + exp1);
+				}
+			}
+
+			p = p.getLiga();
+		}
+
+		return result;
+	}
+
 	public double evaluate(double x) {
 		double result = 0;
 
